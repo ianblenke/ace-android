@@ -245,10 +245,11 @@ public class LinphoneManager implements LinphoneCoreListener, LinphoneChatMessag
 
 	public void configH264HardwareAcell(boolean encode, boolean decode){
 		try{
-			MediastreamerAndroidContext.enableFilterFromName("MSMediaCodecH264Dec", decode); // hw-accelerated decoder
-			MediastreamerAndroidContext.enableFilterFromName("MSMediaCodecH264Enc", encode); // hw-accelerated decoder
+			MediastreamerAndroidContext.enableFilterFromName("MSX264Enc", encode); // software encoder
+			MediastreamerAndroidContext.enableFilterFromName("MSMediaCodecH264Enc", !encode); // hw-accelerated encoder
+			MediastreamerAndroidContext.enableFilterFromName("MSMediaCodecH264Dec", !decode); // hw-accelerated decoder
 			MediastreamerAndroidContext.enableFilterFromName("MSOpenH264Enc", !encode); // software encoder
-			MediastreamerAndroidContext.enableFilterFromName("MSOpenH264Dec", !decode); // software encoder
+			MediastreamerAndroidContext.enableFilterFromName("MSOpenH264Dec", decode); // software decoder
 		} catch (MediastreamException e){
 			android.util.Log.d("LinphoneManager", "configH264HardwareAcell: "+ e);
 		}
