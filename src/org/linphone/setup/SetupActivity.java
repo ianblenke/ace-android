@@ -46,7 +46,9 @@ import org.linphone.core.LinphoneCoreListenerBase;
 import org.linphone.core.LinphoneProxyConfig;
 import org.linphone.custom.LoginMainActivity;
 import org.linphone.mediastream.Log;
-import org.linphone.vtcsecure.Utils;
+
+import joanbempong.android.WelcomeActivity;
+import joanbempong.android.SetupController;
 
 /**
  * @author Sylvain Berfini
@@ -69,8 +71,6 @@ public class SetupActivity extends FragmentActivity implements OnClickListener {
 	final String registrarSRVLookupFormatTLS="_sips._tcp.%domain%";
 	//URL format for autoConfig lookup
 	final String autoConfigSRVLookupFormat="_rueconfig._tls.%domain%";
-
-	static int WIFI_ACTIVITY_RESULT=0;
 
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -118,7 +118,6 @@ public class SetupActivity extends FragmentActivity implements OnClickListener {
 	@Override
 	protected void onResume() {
 		super.onResume();
-		Utils.check_network_status(this, WIFI_ACTIVITY_RESULT);//Anytime activity is resumed and we don't have internet, tell the user.. and offer them to turn on wifi.
 		LinphoneCore lc = LinphoneManager.getLcIfManagerNotDestroyedOrNull();
 		if (lc != null) {
 			lc.addListener(mListener);
@@ -410,18 +409,6 @@ public class SetupActivity extends FragmentActivity implements OnClickListener {
 		default:
 			throw new IllegalStateException("Can't handle " + fragment);
 		}
-		//After displaying surface fragment
-		Utils.check_network_status(this, WIFI_ACTIVITY_RESULT);
-	}
-
-	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		super.onActivityResult(requestCode, resultCode, data);
-		if(resultCode==WIFI_ACTIVITY_RESULT){
-			Intent refresh = new Intent(this, SetupActivity.class);
-			startActivity(refresh);
-			this.finish();
-		}
 	}
 
 	public void displayMenu() {
@@ -443,7 +430,6 @@ public class SetupActivity extends FragmentActivity implements OnClickListener {
 		fragment = new GenericLoginFragment();
 		changeFragment(fragment);
 		currentFragment = SetupFragmentsEnum.GENERIC_LOGIN;
-
 	}
 	
 	public void displayLoginLinphone() {
